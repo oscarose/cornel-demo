@@ -1,0 +1,330 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Openshift cluster build out'
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Network Configuration
+        Parameters:
+          - AvailabilityZones
+          - VPCCIDR
+          - PrivateSubnet1CIDR
+          - PrivateSubnet2CIDR
+          - PrivateSubnet3CIDR
+          - PublicSubnet1CIDR
+          - PublicSubnet2CIDR
+          - PublicSubnet3CIDR
+          - RemoteAccessCIDR
+          - ContainerAccessCIDR
+      - Label:
+          default: DNS Configuration
+        Parameters:
+          - DomainName
+          - HostedZoneID
+          - SubDomainPrefix
+      - Label:
+          default: Amazon EC2 Configuration
+        Parameters:
+          - KeyPairName
+          - AmiId
+      - Label:
+          default: OpenShift Hosts Configuration
+        Parameters:
+          - NumberOfMaster
+          - NumberOfEtcd
+          - NumberOfNodes
+          - MasterInstanceType
+          - EtcdInstanceType
+          - NodesInstanceType
+          - OpenShiftAdminPassword
+      - Label:
+          default: OpenShift Configuration
+        Parameters:
+          - OpenshiftContainerPlatformVersion
+          - AWSServiceBroker
+          - AnsibleFromGit
+          - ClusterName
+          - AutomationBroker
+          - ClusterConsole
+      - Label:
+          default: Red Hat Subscription Information
+        Parameters:
+          - RedhatSubscriptionUserName
+          - RedhatSubscriptionPassword
+          - RedhatSubscriptionPoolID
+      - Label:
+          default: AWS Quick Start Configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3KeyPrefix
+          - OutputBucketName
+    ParameterLabels:
+      AmiId:
+        default: AMI ID
+      KeyPairName:
+        default: SSH Key Name
+      PrivateSubnet1CIDR:
+        default: Private Subnet 1 CIDR
+      PrivateSubnet2CIDR:
+        default: Private Subnet 2 CIDR
+      PrivateSubnet3CIDR:
+        default: Private Subnet 3 CIDR
+      PublicSubnet1CIDR:
+        default: Public Subnet 1 CIDR
+      PublicSubnet2CIDR:
+        default: Public Subnet 2 CIDR
+      PublicSubnet3CIDR:
+        default: Public Subnet 3 CIDR
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      RemoteAccessCIDR:
+        default: Allowed External Access CIDR (OCP UI)
+      ContainerAccessCIDR:
+        default: Allowed External Access CIDR (OCP Router)
+      VPCCIDR:
+        default: VPC CIDR
+      OpenShiftAdminPassword:
+        default: OpenShift UI Password
+      RedhatSubscriptionUserName:
+        default: Red Hat Subscription User Name
+      RedhatSubscriptionPassword:
+        default: Red Hat Subscription Password
+      RedhatSubscriptionPoolID:
+        default: Red Hat Pool ID
+      OpenshiftContainerPlatformVersion:
+        default: Openshift Container Platform Version
+      MasterInstanceType:
+        default: Master Instance Type
+      EtcdInstanceType:
+        default: Etcd Instance Type
+      NodesInstanceType:
+        default: Nodes Instance Type
+      NumberOfMaster:
+        default: Number of Masters
+      NumberOfEtcd:
+        default: Number of Etcds
+      NumberOfNodes:
+        default: Number of Nodes
+      OutputBucketName:
+        default: Output S3 Bucket Name
+      AWSServiceBroker:
+        default: AWS Service Broker
+      HawkularMetrics:
+        default: Hawkular Metrics
+      DomainName:
+        default: Domain Name
+      HostedZoneID:
+        default: Route 53 Hosted Zone ID
+      SubDomainPrefix:
+        default: Subdomain Prefix
+      AutomationBroker:
+        default: OpenSift Automation Broker
+      AvailabilityZones:
+        default: Availability Zones
+      AnsibleFromGit:
+        default: Get Ansible from Git
+      ClusterName:
+        default: Cluster Name
+      ClusterConsole:
+        default: Enable the cluster console (Requires OpenShift 3.11)
+Parameters:
+  AmiId:
+    Type: String
+  AvailabilityZones:
+    Type: CommaDelimitedList
+  KeyPairName:
+    Type: String
+  PrivateSubnet1CIDR:
+    Description: CIDR block for private subnet 1 located in Availability Zone 1
+    Type: String
+  PrivateSubnet2CIDR:
+    Description: CIDR block for private subnet 2 located in Availability Zone 2
+    Type: String
+  PrivateSubnet3CIDR:
+    Description: CIDR block for private subnet 2 located in Availability Zone 3
+    Type: String
+  PublicSubnet1CIDR:
+    Description: CIDR block for the public (DMZ) subnet 1 located in Availability
+      Zone 1
+    Type: String
+  PublicSubnet2CIDR:
+    Description: CIDR block for the public (DMZ) subnet 2 located in Availability
+      Zone 2
+    Type: String
+  PublicSubnet3CIDR:
+    Description: CIDR block for the public (DMZ) subnet 2 located in Availability
+      Zone 3
+    Type: String
+  QSS3BucketName:
+    Default: aws-quickstart
+    Type: String
+  QSS3KeyPrefix:
+    Default: quickstart-redhat-openshift/
+    Type: String
+  RemoteAccessCIDR:
+    Description: The CIDR IP range that is permitted to access the instances, use trusted IP range.
+    Type: String
+  ContainerAccessCIDR:
+    Description: The CIDR IP range that is permitted to access the instances, use trusted IP range.
+    Type: String
+  OpenShiftAdminPassword:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    MinLength: '8'
+    NoEcho: 'true'
+  RedhatSubscriptionUserName:
+    Description: Enter Redhat RHN User Name
+    Type: String
+  RedhatSubscriptionPassword:
+    NoEcho: 'true'
+    Type: 'AWS::SSM::Parameter::Value<String>'
+  RedhatSubscriptionPoolID:
+    Description: Enter Redhat RHN PoolID
+    Type: String
+  OpenshiftContainerPlatformVersion:
+    Description: OpenShift version to deploy
+    Type: String
+    AllowedValues: [ '3.11' ]
+  VPCCIDR:
+    Description: CIDR block for the VPC
+    Type: String
+  MasterInstanceType:
+    Description: Type of EC2 instance for the Master instances
+    Type: String
+  EtcdInstanceType:
+    Description: Type of EC2 instance for the Etcd instances
+    Type: String
+  NodesInstanceType:
+    Description: Type of EC2 instance for the Node instances
+    Type: String
+  NumberOfMaster:
+    Description: This Deployment requires at least 3 OpenShift Master instances
+    Type: String
+  NumberOfEtcd:
+    Description: This Deployment requires at least 3 OpenShift Etcd instances
+    Type: String
+  NumberOfNodes:
+    Description: The desired capacity for the OpenShift node instances
+    Type: Number
+  OutputBucketName:
+    Type: String
+    Default: ''
+  AWSServiceBroker:
+    Default: Enabled
+    Description: Enable the AWS Service Broker
+    Type: String
+    AllowedValues: [ Enabled, Disabled ]
+  HostedZoneID:
+    Type: String
+  CertificateArn:
+    Type: String
+  DomainName:
+    Type: String
+  SubDomainPrefix:
+    Type: String
+  HawkularMetrics:
+    Default: Enabled
+    Description: Enable Hawkular cluster metrics
+    Type: String
+    AllowedValues: [ Enabled, Disabled ]
+  AutomationBroker:
+    Default: Enabled
+    Description: Enable the OpenShift Automation Service Broker
+    Type: String
+    AllowedValues: [ Enabled, Disabled ]
+  AnsibleFromGit:
+    Default: "False"
+    Description: Get openshift installer playbooks from GitHub. By default, they come from RPM.
+    Type: String
+    AllowedValues:
+      - "True"
+      - "False"
+  ClusterName:
+    Default: ""
+    Description: Custom cluster name for kubernetes.io/cluster/ tags, if left blank will use the stackname suffixed with the region
+    Type: String
+  ClusterConsole:
+    Default: Enabled
+    Description: Enable the Cluster Console
+    Type: String
+    AllowedValues: [ Enabled, Disabled ]
+Conditions:
+  CustomClusterName: !Not
+    - !Equals
+      - !Ref ClusterName
+      - ""
+Resources:
+  VPCStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub 'https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template'
+      Parameters:
+        AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones' ]
+        KeyPairName: !Ref 'KeyPairName'
+        NumberOfAZs: '3'
+        PrivateSubnet1ACIDR: !Ref 'PrivateSubnet1CIDR'
+        PrivateSubnet2ACIDR: !Ref 'PrivateSubnet2CIDR'
+        PrivateSubnet3ACIDR: !Ref 'PrivateSubnet3CIDR'
+        PrivateSubnetATag2: !Sub "kubernetes.io/cluster/${AWS::StackName}-${AWS::Region}=owned"
+        PrivateSubnetATag3: "kubernetes.io/role/internal-elb="
+        PublicSubnet1CIDR: !Ref 'PublicSubnet1CIDR'
+        PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
+        PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
+        PublicSubnetTag2: !Sub "kubernetes.io/cluster/${AWS::StackName}-${AWS::Region}=owned"
+        PublicSubnetTag3: "kubernetes.io/role/elb="
+        VPCCIDR: !Ref 'VPCCIDR'
+  OpenShiftStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub 'https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/openshift.template'
+      Parameters:
+        NumberOfAZs: '3'
+        MasterInstanceType: !Ref 'MasterInstanceType'
+        NodesInstanceType: !Ref 'NodesInstanceType'
+        EtcdInstanceType: !Ref 'EtcdInstanceType'
+        NumberOfMaster: !Ref 'NumberOfMaster'
+        NumberOfEtcd: !Ref 'NumberOfEtcd'
+        NumberOfNodes: !Ref 'NumberOfNodes'
+        AnsibleStorageSize: '10'
+        KeyPairName: !Ref 'KeyPairName'
+        PrivateSubnet1ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet1AID'
+        PrivateSubnet2ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet2AID'
+        PrivateSubnet3ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet3AID'
+        PublicSubnet1ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
+        PublicSubnet2ID: !GetAtt 'VPCStack.Outputs.PublicSubnet2ID'
+        PublicSubnet3ID: !GetAtt 'VPCStack.Outputs.PublicSubnet3ID'
+        RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
+        ContainerAccessCIDR: !Ref 'ContainerAccessCIDR'
+        QSS3BucketName: !Ref 'QSS3BucketName'
+        QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
+        OpenShiftAdminPassword: !Ref 'OpenShiftAdminPassword'
+        RedhatSubscriptionUserName: !Ref 'RedhatSubscriptionUserName'
+        RedhatSubscriptionPassword: !Ref 'RedhatSubscriptionPassword'
+        RedhatSubscriptionPoolID: !Ref 'RedhatSubscriptionPoolID'
+        OutputBucketName: !Ref 'OutputBucketName'
+        VPCCIDR: !Ref 'VPCCIDR'
+        VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
+        OpenshiftContainerPlatformVersion: !Ref 'OpenshiftContainerPlatformVersion'
+        AWSServiceBroker: !Ref 'AWSServiceBroker'
+        HostedZoneID: !Ref 'HostedZoneID'
+        DomainName: !Ref 'DomainName'
+        SubDomainPrefix: !Ref 'SubDomainPrefix'
+        HawkularMetrics: !Ref 'HawkularMetrics'
+        AnsibleFromGit: !Ref 'AnsibleFromGit'
+        ClusterName: !If
+        - CustomClusterName
+        - !Ref ClusterName
+        - !Sub '${AWS::StackName}-${AWS::Region}'
+        AutomationBroker: !Ref AutomationBroker
+        AmiId: !Ref AmiId
+        ClusterConsole: !Ref ClusterConsole
+
+Outputs:
+  OpenShiftUI:
+    Description: The URL OpenShiftUI
+    Value: !GetAtt 'OpenShiftStack.Outputs.OpenShiftUI'
+  ContainerAccessELBName:
+    Description: Use this ELB to expose ports to the internet
+    Value: !GetAtt 'OpenShiftStack.Outputs.ContainerAccessELBName'
+

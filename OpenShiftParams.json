@@ -1,0 +1,110 @@
+[
+  {
+    "ParameterKey": "OpenshiftContainerPlatformVersion",
+    "ParameterValue": "3.11"
+  }, 
+  {
+    "ParameterKey": "VPCCIDR",
+    "ParameterValue": "10.192.0.0/16"
+  },
+  {
+    "ParameterKey": "PrivateSubnet1CIDR",
+    "ParameterValue": "10.192.0.0/19"
+  },
+  {
+    "ParameterKey": "PrivateSubnet2CIDR",
+    "ParameterValue": "10.192.32.0/19"
+  },
+  {
+    "ParameterKey": "PrivateSubnet3CIDR",
+    "ParameterValue": "10.192.64.0/19"
+  },
+  {
+    "ParameterKey": "PublicSubnet1CIDR",
+    "ParameterValue": "10.192.128.0/20"
+  },
+  {
+    "ParameterKey": "PublicSubnet2CIDR",
+    "ParameterValue": "10.192.144.0/20"
+  },
+  {
+    "ParameterKey": "PublicSubnet3CIDR",
+    "ParameterValue": "10.192.160.0/20"
+  },
+  {
+    "ParameterKey": "RemoteAccessCIDR",
+    "ParameterValue": "73.135.216.94/32"
+  },
+  {
+    "ParameterKey": "ContainerAccessCIDR",
+    "ParameterValue": "73.135.216.94/32"
+  },
+  {
+    "ParameterKey": "DomainName",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "HostedZoneID",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "CertificateArn",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "SubDomainPrefix",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "KeyPairName",
+    "ParameterValue": "docker"
+  },
+  {
+    "ParameterKey": "AmiId",
+    "ParameterValue": "ami-0916c408cb02e310b"
+  },
+  {
+    "ParameterKey": "AvailabilityZones",
+    "ParameterValue": "us-east-1a,us-east-1b,us-east-1c"
+  },
+  {
+    "ParameterKey": "NumberOfMaster",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "NumberOfEtcd",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "NumberOfNodes",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "MasterInstanceType",
+    "ParameterValue": "m4.xlarge"
+  },
+  {
+    "ParameterKey": "EtcdInstanceType",
+    "ParameterValue": "m4.xlarge"
+  },
+  {
+    "ParameterKey": "NodesInstanceType",
+    "ParameterValue": "m4.xlarge"
+  },
+  {
+    "ParameterKey": "OpenShiftAdminPassword",
+    "ParameterValue": "openshift-passwd"
+  },
+  {
+    "ParameterKey": "RedhatSubscriptionUserName",
+    "ParameterValue": "oscarose"
+  },
+  {
+    "ParameterKey": "RedhatSubscriptionPassword",
+    "ParameterValue": "redhat-passwd"
+  },
+  {
+    "ParameterKey": "RedhatSubscriptionPoolID",
+    "ParameterValue": "8a85f99a707807c30170833f7f5f2066"
+  }
+]
