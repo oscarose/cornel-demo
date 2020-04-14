@@ -24,7 +24,7 @@ pipeline {
             steps {
                  script {
                       sh """
-                      aws s3 mb s3://openshift-ogbacft --region us-east-1
+                      aws s3 mb s3://openshift-ogbacft --region ${aws_region}
                       aws s3 cp $WORKSPACE/OpenShiftCFT.yaml s3://openshift-ogbacft
                       aws cloudformation create-stack --stack-name ${stack_name} --template-url https://openshift-ogbacft.s3.amazonaws.com/OpenShiftCFT.yaml --parameters file://OpenShiftParams.json --disable-rollback --capabilities CAPABILITY_NAMED_IAM
                       chmod a+x $WORKSPACE/cft_create-update_stack_status.sh && $WORKSPACE/cft_create-update_stack_status.sh ${aws_region} ${stack_name} ${stack_status} && aws cloudformation describe-stacks --stack-name ${stack_name}
@@ -41,7 +41,7 @@ pipeline {
             steps {
                  script {
                       sh """
-                      aws s3 mb s3://openshift-ogbacft --region us-east-1
+                      aws s3 mb s3://openshift-ogbacft --region ${aws_region}
                       aws s3 cp $WORKSPACE/OpenShiftCFT.yaml s3://openshift-ogbacft
                       aws cloudformation update-stack --stack-name ${stack_name} --template-url https://openshift-ogbacft.s3.amazonaws.com/OpenShiftCFT.yaml --parameters file://OpenShiftParams.json --capabilities CAPABILITY_NAMED_IAM
                       chmod a+x $WORKSPACE/cft_create-update_stack_status.sh && $WORKSPACE/cft_create-update_stack_status.sh ${aws_region} ${stack_name} ${stack_status} && aws cloudformation describe-stacks --stack-name ${stack_name}
