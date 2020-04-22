@@ -1,0 +1,69 @@
+pipeline {
+    agent {
+        label'master'
+    }
+    parameters {
+        string(name: 'stack_name', defaultValue: '', description: 'OpenShift CFT stack Name',)
+        choice(name: 'aws_region', choices: ['us-east-1', 'us-west-2', ''], description: 'AWS region to deploy OpenShift CFT',)
+        choice(name: 'stack_state', choices: ['create_stack', 'update_stack', 'delete_stack'], description: 'OpenShift clutser stack state',)
+        choice(name: 'slack_notify', choices: ['create_stack', 'update_stack', 'delete_stack'], description: 'OpenShift clutser stack state',)
+        choice(name: 'stack_status', choices: ['CREATE_IN_PROGRESS', 'UPDATE_IN_PROGRESS', 'DELETE_IN_PROGRESS'], description: 'OpenShift cluster create,update or delete status',)
+    }
+    stages {
+        stage('clone down openshift repo') {
+            steps {                
+                git branch: 'master',
+                    credentialsId: 'github_jenkins',      
+                        url: 'https://github.com/oscarose/demoshift.git'
+            }
+        }
+        stage('deploy openshift cluster in the target aws region') {
+            when {
+                 expression { params.stack_state == 'create_stack' }
+            }
+            steps {
+                 script {
+                      sh """
+                      aws s3 mb s3://openshift-ogbacft --region ${aws_region}
+                      aws s3 cp $WORKSPACE/OpenShiftCFT.yaml s3://openshift-ogbacft
+                      aws cloudformation create-stack --stack-name ${stack_name} --template-url https://openshift-ogbacft.s3.amazonaws.com/OpenShiftCFT.yaml --parameters file://OpenShiftParams.json --disable-rollback --capabilities CAPABILITY_NAMED_IAM
+                      chmod a+x $WORKSPACE/cft_create-update_stack_status.sh && $WORKSPACE/cft_create-update_stack_status.sh ${aws_region} ${stack_name} ${stack_status} && aws cloudformation describe-stacks --stack-name ${stack_name}
+                      aws s3 rm s3://openshift-ogbacft/OpenShiftCFT.yaml
+                      aws s3 rb s3://openshift-ogbacft
+                      """
+                 }
+            }
+        }
+        stage('update openshift cluster in the target aws region') {
+            when {
+                 expression { params.stack_state == 'update_stack' }
+            }
+            steps {
+                 script {
+                      sh """
+                      aws s3 mb s3://openshift-ogbacft --region ${aws_region}
+                      aws s3 cp $WORKSPACE/OpenShiftCFT.yaml s3://openshift-ogbacft
+                      aws cloudformation update-stack --stack-name ${stack_name} --template-url https://openshift-ogbacft.s3.amazonaws.com/OpenShiftCFT.yaml --parameters file://OpenShiftParams.json --capabilities CAPABILITY_NAMED_IAM
+                      chmod a+x $WORKSPACE/cft_create-update_stack_status.sh && $WORKSPACE/cft_create-update_stack_status.sh ${aws_region} ${stack_name} ${stack_status} && aws cloudformation describe-stacks --stack-name ${stack_name}
+                      aws s3 rm s3://openshift-ogbacft/OpenShiftCFT.yaml
+                      aws s3 rb s3://openshift-ogbacft
+                      """
+                 }
+            }
+        }
+        stage('delete openshift cluster in the target aws region') {
+            when {
+                 expression { params.stack_state == 'delete_stack' }
+            }
+            steps {
+                 script {
+                      sh """
+                      aws cloudformation delete-stack --stack-name ${stack_name}
+                      chmod a+x $WORKSPACE/cft_delete_stack_status.sh && $WORKSPACE/cft_delete_stack_status.sh ${aws_region} ${stack_name} ${stack_status}
+                      echo "${stack_name} stack deletion is complete"
+                      """
+                 }
+            }
+        }
+    }
+}
