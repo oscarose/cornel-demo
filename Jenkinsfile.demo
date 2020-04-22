@@ -10,10 +10,34 @@ pipeline {
         choice(name: 'stack_status', choices: ['CREATE_IN_PROGRESS', 'UPDATE_IN_PROGRESS', 'DELETE_IN_PROGRESS'], description: 'OpenShift cluster create,update or delete status',)
     }
     stages {
+        stage('OpenShit Cluster creation slack notify Start') {
+            when {
+                expression { params.slack_notify == 'create_stack' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#FFFF00', message: "STARTED OpenShift Cluster Build Out, log into jenkins with this link ${env.BUILD_URL} and monitor the console log")
+            }
+        }
+        stage('OpenShit Cluster stack update slack notify Start') {
+            when {
+                expression { params.slack_notify == 'update_stack' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#FFFF00', message: "STARTED OpenShift Cluster stack update, log into jenkins with this link ${env.BUILD_URL} and monitor the console log")
+            }
+        }
+        stage('OpenShit Cluster stack delete slack notify Start') {
+            when {
+                expression { params.slack_notify == 'delete_stack' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#FFFF00', message: "STARTED OpenShift Cluster stack deletion, log into jenkins with this link ${env.BUILD_URL} and monitor the console log")
+            }
+        }
         stage('clone down openshift repo') {
-            steps {                
+            steps {
                 git branch: 'master',
-                    credentialsId: 'github_jenkins',      
+                    credentialsId: 'github_jenkins',
                         url: 'https://github.com/oscarose/demoshift.git'
             }
         }
@@ -63,6 +87,30 @@ pipeline {
                       echo "${stack_name} stack deletion is complete"
                       """
                  }
+            }
+        }
+        stage('OpenShit Cluster creation SUCCESS') {
+            when {
+                expression { params.slack_notify == 'create_stack' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#00FF00', message: "SUCCESSFUL OpenShift Cluster Build Out, log into Jenkins ${env.BUILD_URL} to get the OpenShift UI url")
+            }
+        }
+        stage('OpenShit Cluster stack update SUCCESS') {
+            when {
+                expression { params.slack_notify == 'update_stack' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#00FF00', message: "SUCCESSFUL OpenShift cluster update, OpenShift UI url is in the console log ${env.BUILD_URL}")
+            }
+        }
+        stage('OpenShit Cluster stack deletion SUCCESS') {
+            when {
+                expression { params.slack_notify == 'delete_stack' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#00FF00', message: "OpenShift cluster stack have been deleted")
             }
         }
     }
