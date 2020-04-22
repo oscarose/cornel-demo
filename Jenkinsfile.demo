@@ -38,7 +38,7 @@ pipeline {
             steps {
                 git branch: 'master',
                     credentialsId: 'github_jenkins',
-                        url: 'https://github.com/oscarose/demoshift.git'
+                        url: 'https://github.com/oscarose/cornel-demo.git'
             }
         }
         stage('deploy openshift cluster in the target aws region') {
