@@ -41,11 +41,11 @@
   },
   {
     "ParameterKey": "DomainName",
-    "ParameterValue": ""
+    "ParameterValue": "oscarose-ogba.com"
   },
   {
     "ParameterKey": "HostedZoneID",
-    "ParameterValue": ""
+    "ParameterValue": "Z1ZVUHT3L33LTB"
   },
   {
     "ParameterKey": "CertificateArn",
@@ -53,7 +53,7 @@
   },
   {
     "ParameterKey": "SubDomainPrefix",
-    "ParameterValue": ""
+    "ParameterValue": "openshift"
   },
   {
     "ParameterKey": "KeyPairName",
@@ -97,7 +97,7 @@
   },
   {
     "ParameterKey": "RedhatSubscriptionUserName",
-    "ParameterValue": "oscarose"
+    "ParameterValue": "oscabelushi"
   },
   {
     "ParameterKey": "RedhatSubscriptionPassword",
@@ -105,6 +105,6 @@
   },
   {
     "ParameterKey": "RedhatSubscriptionPoolID",
-    "ParameterValue": "8a85f99a707807c30170833f7f5f2066"
+    "ParameterValue": "8a85f98e71a87a670171c76d208a5846"
   }
 ]
