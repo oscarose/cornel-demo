@@ -1,0 +1,14 @@
+pipeline {
+    agent {
+        label'master'
+    }
+    stages {
+        stage('clone done the target repo') {
+            steps {
+                git branch: 'master',
+                    credentialsId: 'ssh-github-clone',
+                        url: 'git@github.com:oscarose/cornel-demo.git'
+            }
+        }
+    }
+}
