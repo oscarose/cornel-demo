@@ -81,15 +81,15 @@
   },
   {
     "ParameterKey": "MasterInstanceType",
-    "ParameterValue": "c4.xlarge"
+    "ParameterValue": "m4.xlarge"
   },
   {
     "ParameterKey": "EtcdInstanceType",
-    "ParameterValue": "c4.xlarge"
+    "ParameterValue": "m4.xlarge"
   },
   {
     "ParameterKey": "NodesInstanceType",
-    "ParameterValue": "c4.xlarge"
+    "ParameterValue": "m4.xlarge"
   },
   {
     "ParameterKey": "OpenShiftAdminPassword",
