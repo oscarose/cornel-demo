@@ -1,0 +1,51 @@
+pipeline {
+    agent {
+        label'master'
+    }
+    parameters {
+        string(name: 'stack_name', defaultValue: 'demo-up', description: 'OpenShift CFT stack Name',)
+        choice(name: 'aws_region', choices: ['us-east-1', 'us-west-2', ''], description: 'AWS region to deploy OpenShift CFT',)
+        string(name: 'stack_state', defaultValue: 'delete_stack', description: 'OpenShift clutser stack state',)
+        string(name: 'slack_notify', defaultValue: 'delete_openshift_cluster', description: 'OpenShift clutser stack state',)
+        string(name: 'stack_status', defaultValue: 'DELETE_IN_PROGRESS', description: 'OpenShift cluster create,update or delete status',)
+    }
+    stages {
+        stage('OpenShit Cluster stack delete slack notify Start') {
+            when {
+                expression { params.slack_notify == 'delete_openshift_cluster' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#FFFF00', message: "STARTED OpenShift cluster ${stack_name} stack deletion, jenkins job url ${env.BUILD_URL}")
+            }
+        }
+        stage('clone down openshift repo') {
+            steps {
+                git branch: 'master',
+                    credentialsId: 'github_jenkins',
+                        url: 'https://github.com/oscarose/cornel-demo.git'
+            }
+        }
+        stage('delete openshift cluster in the target aws region') {
+            when {
+                 expression { params.stack_state == 'delete_stack' }
+            }
+            steps {
+                 script {
+                      sh """
+                      aws cloudformation delete-stack --stack-name ${stack_name}
+                      chmod a+x $WORKSPACE/cft_delete_stack_status.sh && $WORKSPACE/cft_delete_stack_status.sh ${aws_region} ${stack_name} ${stack_status}
+                      echo "${stack_name} stack deletion is complete"
+                      """
+                 }
+            }
+        }
+        stage('OpenShit Cluster stack deletion SUCCESS') {
+            when {
+                expression { params.slack_notify == 'delete_openshift_cluster' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#00FF00', message: "OpenShift cluster ${stack_name} stack have been deleted")
+            }
+        }
+    }
+}

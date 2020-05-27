@@ -1,0 +1,87 @@
+pipeline {
+    agent {
+        label'master'
+    }
+    parameters {
+        string(name: 'stack_name', defaultValue: 'demo-up' description: 'OpenShift CFT stack Name',)
+        choice(name: 'aws_region', choices: ['us-east-1', 'us-west-2', ''], description: 'AWS region to deploy OpenShift CFT',)
+        choice(name: 'stack_state', choices: ['create_stack', 'update_stack'], description: 'OpenShift clutser stack state',)
+        choice(name: 'slack_notify', choices: ['create_openshift_cluster', 'update_openshift_cluster', 'delete_openshift_cluster'], description: 'OpenShift clutser stack state',)
+        choice(name: 'stack_status', choices: ['CREATE_IN_PROGRESS', 'UPDATE_IN_PROGRESS'], description: 'OpenShift cluster create,update or delete status',)
+    }
+    stages {
+        stage('OpenShit Cluster creation slack notify Start') {
+            when {
+                expression { params.slack_notify == 'create_openshift_cluster' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#FFFF00', message: "STARTED OpenShift cluster ${stack_name} stack build out, jenkins job url ${env.BUILD_URL}")
+            }
+        }
+        stage('OpenShit Cluster stack update slack notify Start') {
+            when {
+                expression { params.slack_notify == 'update_openshift_cluster' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#FFFF00', message: "STARTED OpenShift Cluster ${stack_name} stack update, jenkins job url ${env.BUILD_URL}")
+            }
+        }
+        stage('clone down openshift repo') {
+            steps {
+                git branch: 'master',
+                    credentialsId: 'github_jenkins',
+                        url: 'https://github.com/oscarose/cornel-demo.git'
+            }
+        }
+        stage('deploy openshift cluster in the target aws region') {
+            when {
+                 expression { params.stack_state == 'create_stack' }
+            }
+            steps {
+                 script {
+                      sh """
+                      aws s3 mb s3://openshift-ogbacft --region ${aws_region}
+                      aws s3 cp $WORKSPACE/OpenShiftCFT.yaml s3://openshift-ogbacft
+                      aws cloudformation create-stack --stack-name ${stack_name} --template-url https://openshift-ogbacft.s3.amazonaws.com/OpenShiftCFT.yaml --parameters file://OpenShiftParams.json --disable-rollback --capabilities CAPABILITY_NAMED_IAM
+                      chmod a+x $WORKSPACE/cft_create-update_stack_status.sh && $WORKSPACE/cft_create-update_stack_status.sh ${aws_region} ${stack_name} ${stack_status} && aws cloudformation describe-stacks --stack-name ${stack_name}
+                      aws s3 rm s3://openshift-ogbacft/OpenShiftCFT.yaml
+                      aws s3 rb s3://openshift-ogbacft
+                      """
+                 }
+            }
+        }
+        stage('update openshift cluster in the target aws region') {
+            when {
+                 expression { params.stack_state == 'update_stack' }
+            }
+            steps {
+                 script {
+                      sh """
+                      aws s3 mb s3://openshift-ogbacft --region ${aws_region}
+                      aws s3 cp $WORKSPACE/OpenShiftCFT.yaml s3://openshift-ogbacft
+                      aws cloudformation update-stack --stack-name ${stack_name} --template-url https://openshift-ogbacft.s3.amazonaws.com/OpenShiftCFT.yaml --parameters file://OpenShiftParams.json --capabilities CAPABILITY_NAMED_IAM
+                      chmod a+x $WORKSPACE/cft_create-update_stack_status.sh && $WORKSPACE/cft_create-update_stack_status.sh ${aws_region} ${stack_name} ${stack_status} && aws cloudformation describe-stacks --stack-name ${stack_name}
+                      aws s3 rm s3://openshift-ogbacft/OpenShiftCFT.yaml
+                      aws s3 rb s3://openshift-ogbacft
+                      """
+                 }
+            }
+        }
+        stage('OpenShit Cluster creation SUCCESS') {
+            when {
+                expression { params.slack_notify == 'create_openshift_cluster' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#00FF00', message: "SUCCESSFUL OpenShift cluster ${stack_name} stack build out, jenkins url ${env.BUILD_URL}")
+            }
+        }
+        stage('OpenShit Cluster stack update SUCCESS') {
+            when {
+                expression { params.slack_notify == 'update_openshift_cluster' }
+            }
+            steps {
+                slackSend (channel: 'application-migration', color: '#00FF00', message: "SUCCESSFUL OpenShift cluster ${stack_name} stack update, jenkins url ${env.BUILD_URL}")
+            }
+        }
+    }
+}
