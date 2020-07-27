@@ -181,7 +181,7 @@ Parameters:
     Type: 'AWS::SSM::Parameter::Value<String>'
   RedhatSubscriptionPoolID:
     Description: Enter Redhat RHN PoolID
-    Type: String
+    Type: 'AWS::SSM::Parameter::Value<String>'
   OpenshiftContainerPlatformVersion:
     Description: OpenShift version to deploy
     Type: String
