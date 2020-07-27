@@ -175,7 +175,7 @@ Parameters:
     NoEcho: 'true'
   RedhatSubscriptionUserName:
     Description: Enter Redhat RHN User Name
-    Type: String
+    Type: 'AWS::SSM::Parameter::Value<String>'
   RedhatSubscriptionPassword:
     NoEcho: 'true'
     Type: 'AWS::SSM::Parameter::Value<String>'
