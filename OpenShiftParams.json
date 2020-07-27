@@ -97,7 +97,7 @@
   },
   {
     "ParameterKey": "RedhatSubscriptionUserName",
-    "ParameterValue": "myoscarose"
+    "ParameterValue": "redhat-username"
   },
   {
     "ParameterKey": "RedhatSubscriptionPassword",
@@ -105,6 +105,6 @@
   },
   {
     "ParameterKey": "RedhatSubscriptionPoolID",
-    "ParameterValue": "8a85f99a727637a90172a5fd4f2a3e0f"
+    "ParameterValue": "redhat-poolid"
   }
 ]
