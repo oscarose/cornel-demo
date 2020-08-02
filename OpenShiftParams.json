@@ -41,11 +41,11 @@
   },
   {
     "ParameterKey": "DomainName",
-    "ParameterValue": "oscarose-ogba.com"
+    "ParameterValue": ""
   },
   {
     "ParameterKey": "HostedZoneID",
-    "ParameterValue": "Z1ZVUHT3L33LTB"
+    "ParameterValue": ""
   },
   {
     "ParameterKey": "CertificateArn",
@@ -53,7 +53,7 @@
   },
   {
     "ParameterKey": "SubDomainPrefix",
-    "ParameterValue": "openshift"
+    "ParameterValue": ""
   },
   {
     "ParameterKey": "KeyPairName",
