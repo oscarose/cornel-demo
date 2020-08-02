@@ -65,7 +65,7 @@
   },
   {
     "ParameterKey": "AvailabilityZones",
-    "ParameterValue": "us-east-1a,us-east-1b,us-east-1c"
+    "ParameterValue": "us-east-2a,us-east-2b,us-east-2c"
   },
   {
     "ParameterKey": "NumberOfMaster",
