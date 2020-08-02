@@ -61,7 +61,7 @@
   },
   {
     "ParameterKey": "AmiId",
-    "ParameterValue": "ami-0916c408cb02e310b"
+    "ParameterValue": "ami-0170fc126935d44c3"
   },
   {
     "ParameterKey": "AvailabilityZones",
