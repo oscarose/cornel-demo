@@ -4,7 +4,7 @@ pipeline {
     }
     parameters {
         string(name: 'stack_name', defaultValue: 'Openshift-demo', description: 'OpenShift CFT stack Name',)
-        choice(name: 'aws_region', choices: ['us-east-1', 'us-west-2', ''], description: 'AWS region to deploy OpenShift CFT',)
+        choice(name: 'aws_region', choices: ['us-east-1', 'us-east-2', ''], description: 'AWS region to deploy OpenShift CFT',)
         choice(name: 'stack_state', choices: ['create_stack', 'update_stack', 'delete_stack'], description: 'OpenShift clutser stack state',)
         choice(name: 'slack_notify', choices: ['create_openshift_cluster', 'update_openshift_cluster', 'delete_openshift_cluster'], description: 'OpenShift clutser stack state',)
         choice(name: 'stack_status', choices: ['CREATE_IN_PROGRESS', 'UPDATE_IN_PROGRESS', 'DELETE_IN_PROGRESS'], description: 'OpenShift cluster create,update or delete status',)
