@@ -50,7 +50,7 @@ pipeline {
                       sh """
                       aws s3 mb s3://openshift-ogbacftgrace --region ${aws_region}
                       aws s3 cp $WORKSPACE/OpenShiftCFT.yaml s3://openshift-ogbacftgrace
-                      aws cloudformation create-stack --stack-name ${stack_name} --template-url https://openshift-ogbacft.s3.amazonaws.com/OpenShiftCFT.yaml --region ${aws_region} --parameters file://OpenShiftParams.json --disable-rollback --capabilities CAPABILITY_NAMED_IAM
+                      aws cloudformation create-stack --stack-name ${stack_name} --template-url https://openshift-ogbacftgrace.s3.amazonaws.com/OpenShiftCFT.yaml --region ${aws_region} --parameters file://OpenShiftParams.json --disable-rollback --capabilities CAPABILITY_NAMED_IAM
                       chmod a+x $WORKSPACE/cft_create-update_stack_status.sh && $WORKSPACE/cft_create-update_stack_status.sh ${aws_region} ${stack_name} ${stack_status} && aws cloudformation describe-stacks --stack-name ${stack_name}
                       aws s3 rm s3://openshift-ogbacftgrace/OpenShiftCFT.yaml
                       aws s3 rb s3://openshift-ogbacftgrace
