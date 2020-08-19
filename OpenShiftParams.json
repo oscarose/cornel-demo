@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "OpenshiftContainerPlatformVersion",
-    "ParameterValue": "3.11"
+    "ParameterValue": "4.4"
   }, 
   {
     "ParameterKey": "VPCCIDR",
