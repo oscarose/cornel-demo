@@ -185,7 +185,7 @@ Parameters:
   OpenshiftContainerPlatformVersion:
     Description: OpenShift version to deploy
     Type: String
-    AllowedValues: [ '4.4' ]
+    AllowedValues: [ '3.11' ]
   VPCCIDR:
     Description: CIDR block for the VPC
     Type: String
