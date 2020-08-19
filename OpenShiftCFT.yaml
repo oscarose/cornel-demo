@@ -128,7 +128,7 @@ Metadata:
       ClusterName:
         default: Cluster Name
       ClusterConsole:
-        default: Enable the cluster console (Requires OpenShift 3.11)
+        default: Enable the cluster console (Requires OpenShift 4.4)
 Parameters:
   AmiId:
     Type: String
@@ -185,7 +185,7 @@ Parameters:
   OpenshiftContainerPlatformVersion:
     Description: OpenShift version to deploy
     Type: String
-    #AllowedValues: [ '4.4' ]
+    AllowedValues: [ '4.4' ]
   VPCCIDR:
     Description: CIDR block for the VPC
     Type: String
