@@ -1,3 +1,116 @@
+[
+  {
+    "ParameterKey": "OpenshiftContainerPlatformVersion",
+    "ParameterValue": "3.11"
+  },
+  {
+    "ParameterKey": "VPCCIDR",
+    "ParameterValue": "10.192.0.0/16"
+  },
+  {
+    "ParameterKey": "PrivateSubnet1CIDR",
+    "ParameterValue": "10.192.0.0/19"
+  },
+  {
+    "ParameterKey": "PrivateSubnet2CIDR",
+    "ParameterValue": "10.192.32.0/19"
+  },
+  {
+    "ParameterKey": "PrivateSubnet3CIDR",
+    "ParameterValue": "10.192.64.0/19"
+  },
+  {
+    "ParameterKey": "PublicSubnet1CIDR",
+    "ParameterValue": "10.192.128.0/20"
+  },
+  {
+    "ParameterKey": "PublicSubnet2CIDR",
+    "ParameterValue": "10.192.144.0/20"
+  },
+  {
+    "ParameterKey": "PublicSubnet3CIDR",
+    "ParameterValue": "10.192.160.0/20"
+  },
+  {
+    "ParameterKey": "RemoteAccessCIDR",
+    "ParameterValue": "73.135.216.94/32"
+  },
+  {
+    "ParameterKey": "ContainerAccessCIDR",
+    "ParameterValue": "73.135.216.94/32"
+  },
+  {
+    "ParameterKey": "DomainName",
+    "ParameterValue": "oscarose-ogba.com"
+  },
+  {
+    "ParameterKey": "HostedZoneID",
+    "ParameterValue": "Z1ZVUHT3L33LTB"
+  },
+  {
+    "ParameterKey": "CertificateArn",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "SubDomainPrefix",
+    "ParameterValue": "openshift"
+  },
+  {
+    "ParameterKey": "KeyPairName",
+    "ParameterValue": "chiboy"
+  },
+  {
+    "ParameterKey": "AmiId",
+    "ParameterValue": "ami-0170fc126935d44c3"
+  },
+  {
+    "ParameterKey": "AvailabilityZones",
+    "ParameterValue": "us-east-2a,us-east-2b,us-east-2c"
+  },
+  {
+    "ParameterKey": "NumberOfMaster",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "NumberOfEtcd",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "NumberOfNodes",
+    "ParameterValue": "1"
+  },
+  {
+    "ParameterKey": "MasterInstanceType",
+    "ParameterValue": "t2.xlarge"
+  },
+  {
+    "ParameterKey": "EtcdInstanceType",
+    "ParameterValue": "t2.xlarge"
+  },
+  {
+    "ParameterKey": "NodesInstanceType",
+    "ParameterValue": "t2.xlarge"
+  },
+  {
+    "ParameterKey": "OpenShiftAdminPassword",
+    "ParameterValue": "openshift-passwd"
+  },
+  {
+    "ParameterKey": "RedhatSubscriptionUserName",
+    "ParameterValue": "redhat-username"
+  },
+  {
+    "ParameterKey": "RedhatSubscriptionPassword",
+    "ParameterValue": "redhat-passwd"
+  },
+  {
+    "ParameterKey": "RedhatSubscriptionPoolID",
+    "ParameterValue": "redhat-poolid"
+  }
+]
+
+
+
 pipeline {
     agent {
         label'master'
